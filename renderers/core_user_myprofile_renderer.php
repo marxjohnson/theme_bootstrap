@@ -29,11 +29,8 @@ class theme_bootstrap_core_user_myprofile_renderer extends \core_user\output\myp
      * @return string
      */
     public function render_key_info(\core_user\output\myprofile\tree $tree) {
-        global $DB;
-        $userid = $this->page->context->instanceid;
-
         $picture = $this->output->user_picture(
-                $DB->get_record('user', array('id' => $userid)),
+                core_user::get_user($this->page->context->instanceid),
                 array('size' => 128));
 
         // Array of the nodes from the tree that we want to display.
@@ -63,11 +60,11 @@ class theme_bootstrap_core_user_myprofile_renderer extends \core_user\output\myp
     public function render_category(\core_user\output\myprofile\category $category) {
         $classes = $category->classes;
         if (empty($classes)) {
-            $return = \html_writer::start_tag('section', array('class' => 'node_category panel panel-default'));
+            $return = \html_writer::start_tag('section', array('class' => 'node_category panel panel-primary'));
         } else {
-            $return = \html_writer::start_tag('section', array('class' => 'node_category panel panel-default ' . $classes));
+            $return = \html_writer::start_tag('section', array('class' => 'node_category panel panel-primary ' . $classes));
         }
-        $return .= \html_writer::tag('div', $category->title, array('class' => 'panel-heading'));
+        $return .= \html_writer::tag('h3', $category->title, array('class' => 'panel-heading'));
         $nodes = $category->nodes;
         if (empty($nodes)) {
             // No nodes, nothing to render.
