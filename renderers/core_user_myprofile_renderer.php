@@ -29,8 +29,8 @@ class theme_bootstrap_core_user_myprofile_renderer extends \core_user\output\myp
      * @return string
      */
     public function render_key_info(\core_user\output\myprofile\tree $tree) {
-        global $PAGE, $DB;
-        $userid = $PAGE->context->instanceid;
+        global $DB;
+        $userid = $this->page->context->instanceid;
 
         $picture = $this->output->user_picture(
                 $DB->get_record('user', array('id' => $userid)),
@@ -51,5 +51,34 @@ class theme_bootstrap_core_user_myprofile_renderer extends \core_user\output\myp
 
         $keyinfo = $this->output->container($picture . $contact, 'profile_keyinfo');
         return $keyinfo;
+    }
+
+    /**
+     * Render a category.
+     *
+     * @param category $category
+     *
+     * @return string
+     */
+    public function render_category(\core_user\output\myprofile\category $category) {
+        $classes = $category->classes;
+        if (empty($classes)) {
+            $return = \html_writer::start_tag('section', array('class' => 'node_category panel panel-default'));
+        } else {
+            $return = \html_writer::start_tag('section', array('class' => 'node_category panel panel-default ' . $classes));
+        }
+        $return .= \html_writer::tag('div', $category->title, array('class' => 'panel-heading'));
+        $nodes = $category->nodes;
+        if (empty($nodes)) {
+            // No nodes, nothing to render.
+            return '';
+        }
+        $return .= \html_writer::start_tag('ul');
+        foreach ($nodes as $node) {
+            $return .= $this->render($node);
+        }
+        $return .= \html_writer::end_tag('ul');
+        $return .= \html_writer::end_tag('section');
+        return $return;
     }
 }
